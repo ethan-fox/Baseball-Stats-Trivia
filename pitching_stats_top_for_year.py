@@ -24,35 +24,33 @@ def format_for_table(rawTable):
 
     return formattedDF
 
-if (len(sys.argv) != 2):
+if (len(sys.argv) != 3):
     print('ERROR! please enter a stat to query on')
-    print('FORMAT:\n$ python3 stats_top_for_year.py HR')
+    print('FORMAT:\n$ python3 pitchhing_stats_top_for_year.py <LG> <STAT>')
     sys.exit(0)
 
-SECRET_YEAR = 1975
-QUERY_STAT = sys.argv[1]
+SECRET_YEAR = 2019
+QUERY_LG = sys.argv[1]
+QUERY_STAT = sys.argv[2]
 TOP_X = 10
 
 allPeople = pd.read_csv('./core/People.csv')
 allTeams = pd.read_csv('./core/Teams.csv')
-allBatting = pd.read_csv('./core/Batting.csv')
+allPitching = pd.read_csv('./core/Pitching.csv')
 
-filterByYear = allBatting[allBatting['yearID'] == SECRET_YEAR]
+filterByYear = allPitching[allPitching['yearID'] == SECRET_YEAR]
 
 ALL_TOP = filterByYear.sort_values(by=[QUERY_STAT], ascending=False)
 
-AMERICAN_TOP = ALL_TOP[ALL_TOP['lgID'] == 'AL']
-NATIONAL_TOP = ALL_TOP[ALL_TOP['lgID'] == 'NL']
+LG_TOP = ALL_TOP[ALL_TOP['lgID'] == QUERY_LG]
 
-RAW_AL_TOP_X = AMERICAN_TOP[['playerID', 'teamID', QUERY_STAT]][0:TOP_X]
-RAW_NL_TOP_X = NATIONAL_TOP[['playerID', 'teamID', QUERY_STAT]][0:TOP_X]
+RAW_LG_TOP_X = LG_TOP[['playerID', 'teamID', QUERY_STAT]][0:TOP_X]
 
-formatted_AL_TOP_X = format_for_table(RAW_AL_TOP_X)
-formatted_NL_TOP_X = format_for_table(RAW_NL_TOP_X)
+formatted_LG_TOP_X = format_for_table(RAW_LG_TOP_X)
 
+print('GUESS THE YEAR!')
 print(f'STAT: {QUERY_STAT}')
-print(f'AL TOP {TOP_X}')
-print(formatted_AL_TOP_X)
-print(f'NL TOP {TOP_X}')
-print(formatted_NL_TOP_X)
+print(f'{QUERY_LG} TOP {TOP_X}')
+print(formatted_LG_TOP_X)
+
 
